@@ -1,3 +1,5 @@
+//If a process has a larger weight, it gets more CPU time.
+
 #include <stdio.h>
 
 int main()
@@ -8,7 +10,7 @@ int main()
     scanf("%d", &n);
 
     int weight[n];
-    float cpuShare[n];
+    float cpuShare[n];    //Stores CPU time
 
     printf("Enter total CPU time available: ");
     scanf("%d", &totalCPUTime);
