@@ -10,109 +10,91 @@ int main()
     printf("Enter number of resources: ");
     scanf("%d", &m);
 
-    int alloc[n][m], max[n][m], need[n][m];
+    int alloc[n][m], request[n][m];
     int avail[m];
 
-    // Allocation Matrix
     printf("\nEnter Allocation Matrix:\n");
-    for (i = 0; i < n; i++)
+    for(i = 0; i < n; i++)
     {
-        for (j = 0; j < m; j++)
+        for(j = 0; j < m; j++)
         {
             scanf("%d", &alloc[i][j]);
         }
     }
 
-    // Maximum Matrix
-    printf("\nEnter Maximum Matrix:\n");
-    for (i = 0; i < n; i++)
+    printf("\nEnter Request Matrix:\n");
+    for(i = 0; i < n; i++)
     {
-        for (j = 0; j < m; j++)
+        for(j = 0; j < m; j++)
         {
-            scanf("%d", &max[i][j]);
+            scanf("%d", &request[i][j]);
         }
     }
 
-    // Available Resources
     printf("\nEnter Available Resources:\n");
-    for (i = 0; i < m; i++)
+    for(i = 0; i < m; i++)
     {
         scanf("%d", &avail[i]);
     }
 
-    // Calculate Need Matrix
-    for (i = 0; i < n; i++)
-    {
-        for (j = 0; j < m; j++)
-        {
-            need[i][j] = max[i][j] - alloc[i][j];
-        }
-    }
+    int finish[n];
 
-    int finish[n], safeSeq[n];
-    for (i = 0; i < n; i++)
-    {
+    for(i = 0; i < n; i++)
         finish[i] = 0;
-    }
 
     int count = 0;
 
-    while (count < n)
+    while(count < n)
     {
         int found = 0;
 
-        for (i = 0; i < n; i++)
+        for(i = 0; i < n; i++)
         {
-
-            if (finish[i] == 0)
+            if(finish[i] == 0)
             {
-
                 int possible = 1;
 
-                for (j = 0; j < m; j++)
+                for(j = 0; j < m; j++)
                 {
-                    if (need[i][j] > avail[j])
+                    if(request[i][j] > avail[j])
                     {
                         possible = 0;
                         break;
                     }
                 }
 
-                if (possible)
+                if(possible)
                 {
-
-                    for (k = 0; k < m; k++)
+                    for(k = 0; k < m; k++)
                     {
                         avail[k] += alloc[i][k];
                     }
 
-                    safeSeq[count] = i;
-                    count++;
                     finish[i] = 1;
+                    count++;
                     found = 1;
                 }
             }
         }
 
-        if (found == 0)
-        {
+        if(found == 0)
             break;
-        }
     }
 
-    if (count == n)
+    if(count == n)
     {
-        printf("\nSystem is in SAFE state.\n");
-        printf("Safe Sequence: ");
-
-        for (i = 0; i < n; i++)
-        {
-            printf("P%d ", safeSeq[i]);
-        }
+        printf("\nNo Deadlock Detected.\n");
     }
     else
     {
-        printf("\nSystem is NOT in safe state.\n");
+        printf("\nDeadlock Detected.\n");
+        printf("Deadlocked Processes: ");
+
+        for(i = 0; i < n; i++)
+        {
+            if(finish[i] == 0)
+                printf("P%d ", i);
+        }
     }
 
     return 0;
