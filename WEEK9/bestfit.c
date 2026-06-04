@@ -1,17 +1,22 @@
+//For each process, allocate the smallest memory block that is large enough to hold the process.
 #include <stdio.h>
 
 int main() {
-    int b[10], p[10], alloc[10], nb, np;
+    int b[10], p[10], alloc[10], nb, np;        //block, proccesss
 
     printf("Enter number of blocks: ");
     scanf("%d", &nb);
     printf("Enter block sizes: ");
-    for(int i=0;i<nb;i++) scanf("%d",&b[i]);
+    for(int i=0;i<nb;i++) 
+        scanf("%d",&b[i]);
 
     printf("Enter number of processes: ");
     scanf("%d", &np);
     printf("Enter process sizes: ");
-    for(int i=0;i<np;i++){ scanf("%d",&p[i]); alloc[i]=-1; }
+    for(int i=0;i<np;i++){ 
+        scanf("%d",&p[i]); 
+            alloc[i]=-1; 
+    }
 
     // Best-Fit allocation
     for(int i=0;i<np;i++){
