@@ -30,7 +30,7 @@ void rate_monotonic(Task tasks[], int n, int hyperperiod) {  //hyperperiod-total
         }
         //Execute Selected Task
         if (chosen != -1) {
-            tasks[chosen].remaining_time--;
+            tasks[chosen].remaining_time--;   //execute task for 1 unit 
             printf("Time %d: Task %d running\n", t, tasks[chosen].id);
         } else {
             printf("Time %d: CPU idle\n", t);
