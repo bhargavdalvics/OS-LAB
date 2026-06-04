@@ -52,14 +52,14 @@ int main()
     int finish[n], safeSeq[n];
     for (i = 0; i < n; i++)
     {
-        finish[i] = 0;
+        finish[i] = 0;     //No process completed.
     }
 
-    int count = 0;
+    int count = 0;         //Tracks number of completed processes.
 
     while (count < n)
     {
-        int found = 0;
+        int found = 0;    //Checks whether any process can execute.
 
         for (i = 0; i < n; i++)
         {
@@ -67,7 +67,7 @@ int main()
             if (finish[i] == 0)
             {
 
-                int possible = 1;
+                int possible = 1;  //Initially assume process is executable.
 
                 for (j = 0; j < m; j++)
                 {
@@ -86,11 +86,11 @@ int main()
                         avail[k] += alloc[i][k];
                     }
 
-                    safeSeq[count] = i;
+                    safeSeq[count] = i; //add process to safe sequence , Store process number
                     count++;
-                    finish[i] = 1;
-                    found = 1;
-                }
+                    finish[i] = 1;      //Mark process as finished
+                    found = 1;          //At least one process executed in this iteration
+                } 
             }
         }
 
@@ -100,7 +100,8 @@ int main()
         }
     }
 
-    if (count == n)
+    // Safe State Check
+    if (count == n)       //All processes completed. safe state 
     {
         printf("\nSystem is in SAFE state.\n");
         printf("Safe Sequence: ");
