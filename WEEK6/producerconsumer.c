@@ -1,72 +1,34 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <pthread.h>
-#include <semaphore.h>
-#include <unistd.h>
+#include<stdio.h>
+#include<semaphore.h>
+#define SIZE 3
+int buffer[SIZE];
+int in =0,out =0;
+sem_t full,empty,mutex;
+void produce(int item){
+    sem_wait(&empty);
+    sem_wait(&mutex);
+    buffer[in]=item;
+    in=(in+1)%SIZE;
+    printf("%d produced",item);
+    sem_post(&mutex);
+    sem_post(&full);
 
-#define BUFFER_SIZE 5
-
-int buffer[BUFFER_SIZE];
-int in = 0, out = 0;
-
-sem_t empty;   // Counts empty slots
-sem_t full;    // Counts filled slots
-pthread_mutex_t mutex; // Protects buffer access
-
-void* producer(void* arg) {
-    int item;
-    for (int i = 0; i < 10; i++) {
-        item = rand() % 100; // Produce an item
-
-        sem_wait(&empty);            // Wait for empty slot
-        pthread_mutex_lock(&mutex);  // Lock buffer
-
-        buffer[in] = item;
-        printf("Producer produced: %d\n", item);
-        in = (in + 1) % BUFFER_SIZE;
-
-        pthread_mutex_unlock(&mutex); // Unlock buffer
-        sem_post(&full);              // Signal full slot
-
-        sleep(1);
-    }
-    return NULL;
 }
 
-void* consumer(void* arg) {
-    int item;
-    for (int i = 0; i < 10; i++) {
-        sem_wait(&full);             // Wait for full slot
-        pthread_mutex_lock(&mutex);  // Lock buffer
-
-        item = buffer[out];
-        printf("Consumer consumed: %d\n", item);
-        out = (out + 1) % BUFFER_SIZE;
-
-        pthread_mutex_unlock(&mutex); // Unlock buffer
-        sem_post(&empty);             // Signal empty slot
-
-        sleep(2);
-    }
-    return NULL;
+void consume(){
+    sem_wait(&full);
+    sem_wait(&mutex);
+    printf("%d consumed",buffer[out]);
+    out=(out+1) %SIZE;
+    sem_post(&mutex);
+    sem_post(&empty);
 }
 
-int main() {
-    pthread_t prod, cons;
-
-    sem_init(&empty, 0, BUFFER_SIZE); // Initially all slots empty
-    sem_init(&full, 0, 0);            // Initially no slots full
-    pthread_mutex_init(&mutex, NULL);
-
-    pthread_create(&prod, NULL, producer, NULL);
-    pthread_create(&cons, NULL, consumer, NULL);
-
-    pthread_join(prod, NULL);
-    pthread_join(cons, NULL);
-
-    sem_destroy(&empty);
-    sem_destroy(&full);
-    pthread_mutex_destroy(&mutex);
-
-    return 0;
+int main(){
+    sem_init(&empty,0,SIZE);
+    sem_init(&full,0,0);
+    sem_init(&mutex,0,1);
+    produce(1);
+    produce(2);
+    produce(3);
 }
