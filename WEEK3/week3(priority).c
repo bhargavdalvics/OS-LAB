@@ -26,10 +26,15 @@ int main() {
 
     case 1: // Non-Preemptive
         while (completed < n) {
-            int idx = -1, min = 999;
+            int idx = -1, min = 999; //min-stores the smallest priority number.
 
             for (int i = 0; i < n; i++)
-                if (p[i].at <= time && p[i].ct == 0 && p[i].pr < min) {
+                if (p[i].at <= time && p[i].ct == 0 && p[i].pr < min) { 
+//p[i].ct == 0 .Process is not completed.
+// 
+// p[i].pr < min. Has higher priority than previously selected process.
+// 
+                    
                     min = p[i].pr;
                     idx = i;
                 }
