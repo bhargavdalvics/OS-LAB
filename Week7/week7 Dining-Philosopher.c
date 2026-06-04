@@ -6,16 +6,17 @@
 #define hungry 1
 #define eating 2
 
-sem_t S[N],mutex;
-int state[N];
+sem_t S[N],mutex;   //S[i] → private semaphore for philosopher i
+int state[N];       //Stores current state of each philosopher
 
 int left(int i){
-    return (i+N-1)%N;
+    return (i+N-1)%N;   
 }
 int right(int i){
     return (i+1)%N;
 }
 void test(int i){
+    //Checks whether philosopher i can start eating.
     if(state[i]==hungry&& state[left(i)]!=eating&&state[right(i)]!=eating){
         state[i]=eating;
         sem_post(&S[i]);
@@ -27,8 +28,8 @@ void take_fork(int i){
     state[i]=hungry;
     printf("Philosopher %d is hungry\n",i);
     test(i);
-    sem_post(&mutex);
-    sem_wait(&S[i]);
+    sem_post(&mutex); //unlock
+    sem_wait(&S[i]); //If forks unavailable, philosopher blocks here.
 }
 
 void put_fork(int i){
@@ -42,9 +43,9 @@ void put_fork(int i){
 
 void philosopher(int i){
     printf("philosopher %d is thinking\n",i);
-    take_fork(i);
+    take_fork(i);     //Try to get forks
     printf("philosopher %d is eating\n",i);
-    put_fork(i);
+    put_fork(i);     //Return forks
     
 }
 
