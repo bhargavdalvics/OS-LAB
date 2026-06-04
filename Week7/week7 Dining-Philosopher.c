@@ -1,55 +1,60 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <pthread.h>
-#include <semaphore.h>
-#include <unistd.h>
+#include<stdio.h>
+#include<semaphore.h>
 
-#define N 5  // Number of philosophers
+#define N 5
+#define thinking 0
+#define hungry 1
+#define eating 2
 
-sem_t chopstick[N];   // Semaphores for chopsticks
+sem_t S[N],mutex;
+int state[N];
 
-void *philosopher(void *num) {
-    int id = *(int *)num;
-
-    while (1) {
-        printf("Philosopher %d is thinking...\n", id);
-        sleep(1);
-
-        // Pick up chopsticks
-        sem_wait(&chopstick[id]);
-        sem_wait(&chopstick[(id + 1) % N]);
-
-        printf("Philosopher %d is eating...\n", id);
-        sleep(2);
-
-        // Put down chopsticks
-        sem_post(&chopstick[id]);
-        sem_post(&chopstick[(id + 1) % N]);
-
-        printf("Philosopher %d finished eating and put down chopsticks.\n", id);
-        sleep(1);
+int left(int i){
+    return (i+N-1)%N;
+}
+int right(int i){
+    return (i+1)%N;
+}
+void test(int i){
+    if(state[i]==hungry&& state[left(i)]!=eating&&state[right(i)]!=eating){
+        state[i]=eating;
+        sem_post(&S[i]);
     }
 }
 
-int main() {
-    pthread_t tid[N];
-    int phil[N];
+void take_fork(int i){
+    sem_wait(&mutex);
+    state[i]=hungry;
+    printf("Philosopher %d is hungry\n",i);
+    test(i);
+    sem_post(&mutex);
+    sem_wait(&S[i]);
+}
 
-    // Initialize semaphores
-    for (int i = 0; i < N; i++) {
-        sem_init(&chopstick[i], 0, 1);
-        phil[i] = i;
+void put_fork(int i){
+    sem_wait(&mutex);
+    state[i]=thinking;
+    printf("philosopher %d is thinking\n",i);
+    test(left(i));
+    test(right(i));
+    sem_post(&mutex);
+}
+
+void philosopher(int i){
+    printf("philosopher %d is thinking\n",i);
+    take_fork(i);
+    printf("philosopher %d is eating\n",i);
+    put_fork(i);
+    
+}
+
+int main(){
+    sem_init(&mutex,0,1);
+    for(int i=0;i<N;i++){
+        sem_init(&S[i],0,0);
+        state[i]=thinking;
     }
-
-    // Create philosopher threads
-    for (int i = 0; i < N; i++) {
-        pthread_create(&tid[i], NULL, philosopher, &phil[i]);
+    for(int i=0;i<N;i++){
+        philosopher(i);
     }
-
-    // Join threads (infinite loop, so program runs continuously)
-    for (int i = 0; i < N; i++) {
-        pthread_join(tid[i], NULL);
-    }
-
-    return 0;
 }
