@@ -6,9 +6,11 @@ int main() {
     //n-no.of page , m-no.offrame
 
     scanf("%d%d", &n, &m);
-    for(i = 0; i < n; i++) scanf("%d", &p[i]);
+    for(i = 0; i < n; i++) 
+        scanf("%d", &p[i]);
 
-    for(i = 0; i < m; i++) f[i] = -1;
+    for(i = 0; i < m; i++)
+        f[i] = -1;
 
     for(i = 0; i < n; i++) {
         int hit = 0;      //Assume page is not present.
