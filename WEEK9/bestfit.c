@@ -15,15 +15,15 @@ int main() {
     printf("Enter process sizes: ");
     for(int i=0;i<np;i++){ 
         scanf("%d",&p[i]); 
-            alloc[i]=-1; 
+            alloc[i]=-1;  //-1 means not allocated yet
     }
 
     // Best-Fit allocation
     for(int i=0;i<np;i++){
         int best=-1;
         for(int j=0;j<nb;j++)
-            if(b[j]>=p[i] && (best==-1 || b[j]<b[best])) best=j;
-        if(best!=-1){ alloc[i]=best; b[best]-=p[i]; }
+            if(b[j]>=p[i] && (best==-1 || b[j]<b[best])) best=j; //Save the index of the current best block.
+        if(best!=-1){ alloc[i]=best; b[best]-=p[i]; }     
     }
 
     printf("\nProcess\tSize\tBlock\n");
