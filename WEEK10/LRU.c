@@ -21,9 +21,10 @@ int main() {
             } 
 
         if(!hit) {
-            pos = 0;
+            pos = 0; //Assume First Frame Will Be Replaced
+            //Find Least Recently Used Page
             for(j = 1; j < m; j++) 
-                if(f[j] == -1 || t[j] < t[pos])  //Smaller time means older usage, least recently used page
+                if(f[j] == -1 || t[j] < t[pos])  //Smaller time means older usage, least recently used page //-1=Empty Frame Exists,choose 
                     pos = j;                     //Store frame position to replace.
 
             f[pos] = p[i];       //Put new page into selected frame.
